@@ -1,10 +1,6 @@
 # Complete Feature Documentation
 ### Django + React + SQL Authentication System
 
-This document explains **every feature** that was built, **what tools/packages are used for each**, and **how everything connects together**. Written in simple English for easy understanding.
-
----
-
 ## Project Overview
 
 This project is a **production-ready Authentication System** built with:
