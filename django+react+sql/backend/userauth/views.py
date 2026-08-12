@@ -10,6 +10,7 @@ import random
 from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
+from django.core.mail import send_mail
 import urllib.parse
 import urllib.request
 import json
@@ -146,7 +147,6 @@ class UserView(APIView):
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.core.mail import send_mail
 
 class RequestPasswordResetView(APIView):
     permission_classes = [permissions.AllowAny]
