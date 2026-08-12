@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { updateUserProfile, deleteUserAccount } from "../services/api";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ function Dashboard() {
   const { user, updateUserLocal, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [newUsername, setNewUsername] = useState("");
+  const [newUsername, setNewUsername] = useState(user ? user.username : "");
   const [usernameMessage, setUsernameMessage] = useState({ type: "", text: "" });
 
   const [oldPassword, setOldPassword] = useState("");
@@ -15,6 +15,12 @@ function Dashboard() {
   const [passwordMessage, setPasswordMessage] = useState({ type: "", text: "" });
 
   const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setNewUsername(user.username);
+    }
+  }, [user]);
 
   const handleUpdateUsername = async (e) => {
     e.preventDefault();
