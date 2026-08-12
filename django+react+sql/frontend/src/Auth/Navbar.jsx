@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { logoutUser } from "../api/axios";
+import { logoutUser } from "../services/api";
 
 function Navbar() {
-  const { user, logout, openRegisterModal } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await logoutUser(); // Call API to blacklist token
-    logout(); // Clear client-side auth state
+    await logoutUser();
+    logout();
     navigate("/login");
   };
 
@@ -31,18 +31,15 @@ function Navbar() {
             </>
           ) : (
             <>
-              <Link
-                to="/login"
-                className="text-gray-800 hover:text-blue-600"
-              >
+              <Link to="/login" className="text-gray-800 hover:text-blue-600">
                 Login
               </Link>
-              <button
-                onClick={openRegisterModal}
+              <Link
+                to="/register"
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
               >
                 Register
-              </button>
+              </Link>
             </>
           )}
         </div>

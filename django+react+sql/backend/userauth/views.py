@@ -116,6 +116,32 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
+    def put(self, request):
+        user = request.user
+        data = request.data
+        
+        if 'username' in data:
+            username = data['username']
+            if User.objects.filter(username=username).exclude(pk=user.pk).exists():
+                return Response({'error': 'Username is already taken.'}, status=status.HTTP_400_BAD_REQUEST)
+            user.username = username
+            
+        if 'password' in data and 'old_password' in data:
+            if not user.check_password(data['old_password']):
+                return Response({'error': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
+            if len(data['password']) < 8:
+                return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(data['password'])
+            
+        user.save()
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response({'message': 'Account deleted successfully.'}, status=status.HTTP_200_OK)
+
 
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode

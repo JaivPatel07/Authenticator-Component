@@ -37,18 +37,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("refreshToken");
   };
 
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
-  const openRegisterModal = () => setIsRegisterModalOpen(true);
-  const closeRegisterModal = () => setIsRegisterModalOpen(false);
+  const updateUserLocal = (newUserData) => {
+    setUser(newUserData);
+  };
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        user, login, logout, loading,
-        isRegisterModalOpen, openRegisterModal, closeRegisterModal 
-      }}
-    >
+    <AuthContext.Provider value={{ user, login, logout, loading, updateUserLocal }}>
       {children}
     </AuthContext.Provider>
   );

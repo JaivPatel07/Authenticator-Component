@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { confirmPasswordReset } from "../api/axios";
+import { confirmPasswordReset } from "../services/api";
 
 function ResetPasswordConfirm() {
   const { uid, token } = useParams();

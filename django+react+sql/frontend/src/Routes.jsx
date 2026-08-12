@@ -1,11 +1,10 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import Auth from './Auth/authenticate.jsx'
-import RegisterModal from './Auth/register.jsx'
 import ForgotPassword from './Auth/ForgotPassword.jsx'
 import ResetPasswordConfirm from './Auth/ResetPasswordConfirm.jsx'
 import { OAuthCallback } from './api/oauth.jsx'
-import Dashboard from './Auth/Dashboard.jsx' // Import the Dashboard component
+import Dashboard from './Auth/Dashboard.jsx'
 
 import { useAuth } from './Auth/AuthContext.jsx'
 import Layout from './Layout.jsx'
@@ -18,10 +17,10 @@ function OAuthCallbackWrapper() {
 export default function AppRoutes() {
   return (
     <BrowserRouter>
-      <RegisterModal />
       <Routes>
-        {/* Pages without Navbar */}
+        {/* Auth pages (no Navbar) */}
         <Route path="/login" element={<Auth />} />
+        <Route path="/register" element={<Auth />} />
 
         {/* Pages with Navbar */}
         <Route element={<Layout />}>
