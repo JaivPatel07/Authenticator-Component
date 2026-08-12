@@ -1,13 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import registerUser from "../api/axios.js";
 import { getGoogleAuthUrl, getGitHubAuthUrl } from "../api/oauth";
+import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
-function Register() {
+function RegisterModal() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { isRegisterModalOpen, closeRegisterModal } = useAuth();
   const navigate = useNavigate();
+
+  if (!isRegisterModalOpen) return null;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,12 +44,11 @@ function Register() {
       const response = await registerUser(data);
 
       setSuccessMessage(
-        response.message ||
-          "Registration successful! Redirecting to login..."
+        response.message || "Registration successful! You can now login."
       );
 
       setTimeout(() => {
-        navigate('/login');
+        closeRegisterModal();
       }, 2000);
 
       event.target.reset();
@@ -59,8 +62,17 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-md">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+      <div className="relative w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
+        <button
+          onClick={closeRegisterModal}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
         <h1 className="text-3xl font-bold text-center text-gray-900">
           Create Account
         </h1>
@@ -100,8 +112,7 @@ function Register() {
               name="username"
               placeholder="Enter username"
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg
-                         focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -119,8 +130,7 @@ function Register() {
               name="email"
               placeholder="Enter email"
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg
-                         focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -138,17 +148,14 @@ function Register() {
               name="password"
               placeholder="Enter password"
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg
-                         focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg
-                       font-semibold hover:bg-blue-700 transition
-                       disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Creating Account..." : "Register"}
           </button>
@@ -156,12 +163,15 @@ function Register() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{" "}
-          <Link
-            to="/login"
-            className="text-blue-600 font-medium hover:underline"
+          <button
+            onClick={() => {
+              closeRegisterModal();
+              navigate("/login");
+            }}
+            className="text-blue-600 font-medium hover:underline focus:outline-none"
           >
             Login
-          </Link>
+          </button>
         </p>
 
         {/* Divider */}
@@ -174,7 +184,7 @@ function Register() {
         {/* Social Login Buttons */}
         <div className="flex flex-col gap-3">
           <a
-            href={getGoogleAuthUrl()}
+            href={getGoogleAuthUrl('signup')}
             className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -187,7 +197,7 @@ function Register() {
           </a>
 
           <a
-            href={getGitHubAuthUrl()}
+            href={getGitHubAuthUrl('signup')}
             className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -201,4 +211,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default RegisterModal;

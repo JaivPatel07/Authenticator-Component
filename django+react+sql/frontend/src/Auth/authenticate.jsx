@@ -11,7 +11,7 @@ function Authenticate() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, openRegisterModal } = useAuth();
   const navigate = useNavigate();
   const inputRefs = useRef([]);
 
@@ -171,9 +171,9 @@ function Authenticate() {
 
             <p className="text-center text-sm text-gray-500 mt-6">
               Don't have an account?{" "}
-              <Link to="/register" className="text-blue-600 font-medium hover:underline">
+              <button onClick={openRegisterModal} className="text-blue-600 font-medium hover:underline focus:outline-none">
                 Register
-              </Link>
+              </button>
             </p>
 
             {/* Divider */}
@@ -186,7 +186,7 @@ function Authenticate() {
             {/* Social Login Buttons */}
             <div className="flex flex-col gap-3">
               <a
-                href={getGoogleAuthUrl()}
+                href={getGoogleAuthUrl('login')}
                 className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -199,7 +199,7 @@ function Authenticate() {
               </a>
 
               <a
-                href={getGitHubAuthUrl()}
+                href={getGitHubAuthUrl('login')}
                 className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

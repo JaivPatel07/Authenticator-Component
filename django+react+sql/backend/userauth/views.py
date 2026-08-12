@@ -235,16 +235,23 @@ class GoogleLoginView(APIView):
             return Response({'error': 'Could not retrieve email from Google.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Step 3: Find or create user
+        action = request.data.get('action', 'login')
         username_base = email.split('@')[0]
-        user, created = User.objects.get_or_create(
-            email=email,
-            defaults={
-                'username': username_base,
-                'first_name': name.split(' ')[0] if name else '',
-                'last_name': ' '.join(name.split(' ')[1:]) if name else '',
-                'is_verified': True,
-            }
-        )
+        
+        try:
+            user = User.objects.get(email=email)
+            created = False
+        except User.DoesNotExist:
+            if action == 'login':
+                return Response({'error': 'Account does not exist. Please sign up first.'}, status=status.HTTP_400_BAD_REQUEST)
+            user = User.objects.create(
+                email=email,
+                username=username_base,
+                first_name=name.split(' ')[0] if name else '',
+                last_name=' '.join(name.split(' ')[1:]) if name else '',
+                is_verified=True,
+            )
+            created = True
 
         # Step 4: Return JWT tokens
         refresh = RefreshToken.for_user(user)
@@ -328,15 +335,21 @@ class GitHubLoginView(APIView):
         name = userinfo.get('name', '') or ''
 
         # Step 4: Find or create user
-        user, created = User.objects.get_or_create(
-            email=email,
-            defaults={
-                'username': login_name,
-                'first_name': name.split(' ')[0] if name else '',
-                'last_name': ' '.join(name.split(' ')[1:]) if name else '',
-                'is_verified': True,
-            }
-        )
+        action = request.data.get('action', 'login')
+        try:
+            user = User.objects.get(email=email)
+            created = False
+        except User.DoesNotExist:
+            if action == 'login':
+                return Response({'error': 'Account does not exist. Please sign up first.'}, status=status.HTTP_400_BAD_REQUEST)
+            user = User.objects.create(
+                email=email,
+                username=login_name,
+                first_name=name.split(' ')[0] if name else '',
+                last_name=' '.join(name.split(' ')[1:]) if name else '',
+                is_verified=True,
+            )
+            created = True
 
         # Step 5: Return JWT tokens
         refresh = RefreshToken.for_user(user)

@@ -8,7 +8,7 @@ const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID || "YOUR_GITHUB_C
 const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || "http://localhost:5173";
 
 // Build the URL that sends users to Google for authorization
-export const getGoogleAuthUrl = () => {
+export const getGoogleAuthUrl = (action = 'login') => {
   const redirectUri = `${FRONTEND_URL}/auth/callback/google`;
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
@@ -17,16 +17,18 @@ export const getGoogleAuthUrl = () => {
     scope: "openid email profile",
     access_type: "offline",
     prompt: "select_account",
+    state: action,
   });
   return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 };
 
 // Build the URL that sends users to GitHub for authorization
-export const getGitHubAuthUrl = () => {
+export const getGitHubAuthUrl = (action = 'login') => {
   const params = new URLSearchParams({
     client_id: GITHUB_CLIENT_ID,
     redirect_uri: `${FRONTEND_URL}/auth/callback/github`,
     scope: "user:email",
+    state: action,
   });
   return `https://github.com/login/oauth/authorize?${params.toString()}`;
 };
@@ -44,6 +46,7 @@ export function OAuthCallback({ login }) {
   useEffect(() => {
     const code = searchParams.get("code");
     const error = searchParams.get("error");
+    const action = searchParams.get("state") || "login";
 
     if (error || !code) {
       setErrorMessage(`Authorization was denied or failed: ${error || "No code received."}`);
@@ -56,9 +59,9 @@ export function OAuthCallback({ login }) {
         let response;
         if (provider === "google") {
           const redirectUri = `${FRONTEND_URL}/auth/callback/google`;
-          response = await googleLogin(code, redirectUri);
+          response = await googleLogin(code, redirectUri, action);
         } else {
-          response = await githubLogin(code);
+          response = await githubLogin(code, action);
         }
         login(response);
         navigate("/dashboard");

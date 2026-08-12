@@ -40,9 +40,9 @@ export const verifyOTP = async (email, otp) => {
   }
 };
 
-export const googleLogin = async (code, redirectUri) => {
+export const googleLogin = async (code, redirectUri, action = 'login') => {
   try {
-    const response = await api.post("auth/google/", { code, redirect_uri: redirectUri });
+    const response = await api.post("auth/google/", { code, redirect_uri: redirectUri, action });
     return response.data;
   } catch (error) {
     const message = error.response?.data?.error || "Google login failed.";
@@ -50,9 +50,9 @@ export const googleLogin = async (code, redirectUri) => {
   }
 };
 
-export const githubLogin = async (code) => {
+export const githubLogin = async (code, action = 'login') => {
   try {
-    const response = await api.post("auth/github/", { code });
+    const response = await api.post("auth/github/", { code, action });
     return response.data;
   } catch (error) {
     const message = error.response?.data?.error || "GitHub login failed.";
