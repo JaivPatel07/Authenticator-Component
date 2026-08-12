@@ -4,7 +4,7 @@ import Auth from './Auth/authenticate.jsx'
 import Register from './Auth/register.jsx'
 import ForgotPassword from './Auth/ForgotPassword.jsx'
 import ResetPasswordConfirm from './Auth/ResetPasswordConfirm.jsx'
-import { OAuthCallback } from './api/oauth.js'
+import { OAuthCallback } from './api/oauth.jsx'
 import { useAuth } from './Auth/AuthContext.jsx'
 
 
