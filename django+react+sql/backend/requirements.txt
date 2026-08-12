@@ -1,0 +1,9 @@
+Django==5.2.17
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+python-dotenv
+gunicorn
+psycopg2-binary
+
+
